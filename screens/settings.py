@@ -1,0 +1,9 @@
+import flet as ft
+
+def settings_view(page,current_user=None,navigate=None,logout=None):
+    user=current_user or getattr(page,'current_user',{}) or {}
+    rows=[('person','بيانات الحساب','account'),('receipt_long','العمليات','accounting'),('insert_chart','التقارير','reports'),('fingerprint','البصمة',None),('lock','تغيير الرمز السري',None),('devices','الأجهزة المصرح بها',None),('notifications','تنبيه انخفاض الرصيد',None),('info','إصدار التطبيق 1.0.0',None)]
+    iconmap={'person':ft.icons.PERSON_OUTLINE,'receipt_long':ft.icons.RECEIPT_LONG_OUTLINED,'insert_chart':ft.icons.INSERT_CHART_OUTLINED,'fingerprint':ft.icons.FINGERPRINT,'lock':ft.icons.LOCK_OUTLINE,'devices':ft.icons.DEVICES_OUTLINED,'notifications':ft.icons.NOTIFICATIONS_NONE,'info':ft.icons.INFO_OUTLINE}
+    def row(title,icon,route):
+        return ft.Container(padding=15,border_radius=16,bgcolor=ft.colors.WHITE,content=ft.Row([ft.Icon(iconmap[icon],color=ft.colors.INDIGO_600),ft.Text(title,size=16,expand=True),ft.Icon(ft.icons.CHEVRON_LEFT,color=ft.colors.GREY_500)]),on_click=(lambda e:navigate(route) if route and navigate else None))
+    return ft.View('/settings',[ft.AppBar(title=ft.Text('الإعدادات'),leading=ft.IconButton(ft.icons.ARROW_BACK,on_click=lambda e:navigate('home') if navigate else None)),ft.Container(expand=True,bgcolor=ft.colors.GREY_50,padding=16,content=ft.Column([ft.Container(padding=20,border_radius=20,bgcolor=ft.colors.INDIGO_600,content=ft.Row([ft.CircleAvatar(content=ft.Icon(ft.icons.PERSON),radius=28),ft.Column([ft.Text(user.get('name','مستخدم'),size=19,weight=ft.FontWeight.BOLD,color=ft.colors.WHITE),ft.Text(f"رقم الحساب: {user.get('user_id','—')}",color=ft.colors.WHITE70)],expand=True)])),ft.Text('إعدادات الدخول والحساب',size=18,weight=ft.FontWeight.BOLD),*[row(t,k,r) for k,t,r in rows],ft.Divider(),ft.OutlinedButton('تسجيل الخروج',icon=ft.icons.LOGOUT,on_click=lambda e:logout() if logout else None)],scroll=ft.ScrollMode.AUTO))])
